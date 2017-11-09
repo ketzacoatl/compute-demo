@@ -1,0 +1,5 @@
+base:
+  '*':
+    - packer
+    - bootstrap
+    - users
