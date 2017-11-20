@@ -1,0 +1,5 @@
+*.sw[p,o]
+.terraform
+terraform.tfstate
+tf.out
+id_rsa*
