@@ -26,10 +26,11 @@ variable "ami" {
 variable "instance_type" {
   description = "map of roles and instance types (VM sizes)"
   default     = {
-    "core-leader" = "t2.micro"
-    "bastion"     = "t2.nano"
-    "worker"      = "t2.small"
-    "manage"      = "t2.small"
+    "core-leader"   = "t2.micro"
+    "bastion"       = "t2.nano"
+    "worker"        = "t2.small"
+    "manage"        = "t2.small"
+    "load-balancer" = "t2.nano"
   }
 }
 
