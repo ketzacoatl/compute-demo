@@ -15,7 +15,7 @@ file_roots_git:
       rev: 'master'
     fpco-salt-formula:
       url: https://github.com/fpco/fpco-salt-formula
-      rev: 'develop'
+      rev: 'data-ops-eval'
   # logentries-salt-formula:
   #   url: git@github.com:fpco/logentries-salt-formula.git
   #   rev: 'master'
