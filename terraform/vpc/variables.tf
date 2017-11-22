@@ -13,6 +13,23 @@ variable "ssh_pubkey" {
   default     = "./id_rsa.pub"
 }
 
+variable "ssh_key" {
+  description = "File path to SSH public key"
+  default     = "./id_rsa"
+}
+
+variable "ami" {
+  description = "default AMI, FPCO build for SOA-driven infrastructure"
+  default     = "ami-95c715ed"
+}
+
+variable "instance_type" {
+  description = "map of roles and instance types (VM sizes)"
+  default     = {
+    "bastion"     = "t2.nano"
+  }
+}
+
 variable "public_subnet_cidrs" {
   description = "A list of public subnet CIDRs to deploy inside the VPC"
   default     = ["10.23.11.0/24"] #, "10.23.12.0/24", "10.23.13.0/24"]
