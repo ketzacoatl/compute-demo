@@ -96,7 +96,7 @@ job "ladder" {
                 namespace: "EC2"
                 statistic: "Average"
                 unit: "Percent"
-                offset: 0
+                offset: "0s"
                 dimensions:
                   - name: "ClusterName"
                     value: "data-ops-eval-workers-us-west-2"
@@ -106,8 +106,10 @@ job "ladder" {
               config:
                 scaleup_threshold: 80
                 scaledown_threshold: 40
+                scaleup_percent: 10
                 scaleup_max_quantity: 2
                 scaleup_min_quantity: 1
+                scaledown_percent: 10
                 scaledown_max_quantity: 1
                 scaledown_min_quantity: 1
         EOH
