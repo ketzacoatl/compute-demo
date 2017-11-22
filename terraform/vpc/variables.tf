@@ -29,6 +29,7 @@ variable "instance_type" {
     "core-leader" = "t2.micro"
     "bastion"     = "t2.nano"
     "worker"      = "t2.small"
+    "manage"      = "t2.small"
   }
 }
 
