@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 terraform {
-  required_version = "= 0.10.8"
+  required_version = "= 0.11.0"
 }
 
 resource "aws_key_pair" "main" {
