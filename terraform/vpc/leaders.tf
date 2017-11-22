@@ -1,32 +1,47 @@
-module "consul-leader-sg" {
-  source      = "github.com/fpco/fpco-terraform-aws//tf-modules/consul-leader-sg?ref=data-ops-eval"
-  name        = "${var.name}"
+# Security Group for consul/nomad leaders
+module "core-leaders-sg" {
+  source      = "github.com/fpco/fpco-terraform-aws//tf-modules/security-group-base?ref=data-ops-eval"
+  name        = "${var.name}-core-leaders"
+  description = "security group for core-leader instances in the private subnet"
   vpc_id      = "${module.vpc.vpc_id}"
-  cidr_blocks = ["${var.private_subnet_cidrs}"]
 }
 
-module "consul-agent-sg" {
-  source      = "github.com/fpco/fpco-terraform-aws//tf-modules/consul-agent-sg?ref=data-ops-eval"
-  name        = "${var.name}"
-  vpc_id      = "${module.vpc.vpc_id}"
-  cidr_blocks = ["${var.private_subnet_cidrs}"]
+module "core-leaders-vpc-ssh-rule" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/ssh-sg?ref=data-ops-eval"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${module.core-leaders-sg.id}"
 }
 
-module "nomad-leader-sg" {
-  source      = "github.com/fpco/fpco-terraform-aws//tf-modules/nomad-server-sg?ref=data-ops-eval"
-  name        = "${var.name}"
-  vpc_id      = "${module.vpc.vpc_id}"
+module "core-leaders-open-egress-rule" {
+  source              = "github.com/fpco/fpco-terraform-aws//tf-modules/open-egress-sg?ref=data-ops-eval"
+  security_group_id = "${module.core-leaders-sg.id}"
+}
+
+module "core-leaders-consul-leader-rules" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/consul-leader-sg?ref=data-ops-eval"
+  cidr_blocks       = ["${var.private_subnet_cidrs}"]
+  security_group_id = "${module.core-leaders-sg.id}"
+}
+
+module "core-leaders-consul-agent-rules" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/consul-agent-sg?ref=data-ops-eval"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${module.core-leaders-sg.id}"
+}
+
+module "core-leaders-nomad-leader-rules" {
+  source             = "github.com/fpco/fpco-terraform-aws//tf-modules/nomad-server-sg?ref=data-ops-eval"
   # subnets where nomad servers are deployed
   server_cidr_blocks = ["${var.private_subnet_cidrs}"]
   # subnets where nomad workers/agents are deployed
-  worker_cidr_blocks = ["${var.private_subnet_cidrs}"]
+  worker_cidr_blocks = ["${var.vpc_cidr}"]
+  security_group_id  = "${module.core-leaders-sg.id}"
 }
 
-module "nomad-agent-sg" {
-  source      = "github.com/fpco/fpco-terraform-aws//tf-modules/nomad-agent-sg?ref=data-ops-eval"
-  name        = "${var.name}"
-  vpc_id      = "${module.vpc.vpc_id}"
-  cidr_blocks = ["${var.private_subnet_cidrs}"]
+module "core-leaders-nomad-agent-rules" {
+  source             = "github.com/fpco/fpco-terraform-aws//tf-modules/nomad-agent-sg?ref=data-ops-eval"
+  cidr_blocks        = ["${var.vpc_cidr}"]
+  security_group_id  = "${module.core-leaders-sg.id}"
 }
 
 # IAM role to attach the instance's policy
@@ -179,25 +194,16 @@ data "template_file" "core_leaders_private_ips" {
 module "core-leaders" {
   source = "github.com/fpco/fpco-terraform-aws//tf-modules/ec2-fixed-ip-auto-recover-instances?ref=data-ops-eval"
   # name scheme looks like "name-core-leader-01" and so on 
-  name_prefix      = "${var.name}"
-  name_format      = "%s-core-leader-%02d"
-  ami              = "${var.ami}"
-  instance_type    = "${var.instance_type["core-leader"]}"
-  iam_profiles     = ["${aws_iam_instance_profile.core-leader-iam-profile.*.name}"]
-  #subnet_ids       = ["${module.private-subnets.ids}"]
-  subnet_ids       = ["${module.vpc.private_subnet_ids}"]
-  private_ips      = ["${data.template_file.core_leaders_private_ips.*.rendered}"]
-  key_name         = "${aws_key_pair.main.key_name}"
-  root_volume_size = "10"
-
-  security_group_ids = [
-    "${module.private-ssh-sg.id}",
-    "${module.open-egress-sg.id}",
-    "${module.consul-leader-sg.id}",
-    "${module.consul-agent-sg.id}",
-    "${module.nomad-leader-sg.id}",
-#   "${module.nomad-agent-sg.id}",
-  ]
-
-  user_data = ["${data.template_file.core-leader-init.*.rendered}"]
+  name_prefix        = "${var.name}"
+  name_format        = "%s-core-leader-%02d"
+  ami                = "${var.ami}"
+  instance_type      = "${var.instance_type["core-leader"]}"
+  iam_profiles       = ["${aws_iam_instance_profile.core-leader-iam-profile.*.name}"]
+  #subnet_ids        = ["${module.private-subnets.ids}"]
+  subnet_ids         = ["${module.vpc.private_subnet_ids}"]
+  private_ips        = ["${data.template_file.core_leaders_private_ips.*.rendered}"]
+  key_name           = "${aws_key_pair.main.key_name}"
+  root_volume_size   = "10"
+  security_group_ids = ["${module.core-leaders-sg.id}"]
+  user_data          = ["${data.template_file.core-leader-init.*.rendered}"]
 }

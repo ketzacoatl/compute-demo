@@ -1,3 +1,21 @@
+# Security Group for bastion hosts
+module "bastion-sg" {
+  source      = "github.com/fpco/fpco-terraform-aws//tf-modules/security-group-base?ref=data-ops-eval"
+  name        = "${var.name}-bastion"
+  description = "security group for bastion instances in the public subnet"
+  vpc_id      = "${module.vpc.vpc_id}"
+}
+
+module "bastion-public-ssh-rule" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/ssh-sg?ref=data-ops-eval"
+  security_group_id = "${module.bastion-sg.id}"
+}
+
+module "bastion-open-egress-rule" {
+  source              = "github.com/fpco/fpco-terraform-aws//tf-modules/open-egress-sg?ref=data-ops-eval"
+  security_group_id = "${module.bastion-sg.id}"
+}
+
 resource "aws_instance" "bastion" {
   ami               = "${var.ami}"
   key_name          = "${aws_key_pair.main.key_name}"
@@ -11,10 +29,7 @@ resource "aws_instance" "bastion" {
 
   associate_public_ip_address = "true"
 
-  vpc_security_group_ids = [
-    "${module.public-ssh-sg.id}",
-    "${module.open-egress-sg.id}",
-  ]
+  vpc_security_group_ids = ["${module.bastion-sg.id}"]
 
   #iam_instance_profile = "${aws_iam_instance_profile.credstash.name}"
 

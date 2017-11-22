@@ -1,3 +1,35 @@
+# Security Group for nomad workers
+module "workers-sg" {
+  source      = "github.com/fpco/fpco-terraform-aws//tf-modules/security-group-base?ref=data-ops-eval"
+  name        = "${var.name}-workers"
+  description = "security group for worker instances in the private subnet"
+  vpc_id      = "${module.vpc.vpc_id}"
+}
+
+module "workers-vpc-ssh-rule" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/ssh-sg?ref=data-ops-eval"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${module.workers-sg.id}"
+}
+
+module "workers-open-egress-rule" {
+  source              = "github.com/fpco/fpco-terraform-aws//tf-modules/open-egress-sg?ref=data-ops-eval"
+  security_group_id = "${module.workers-sg.id}"
+}
+
+module "workers-consul-agent-rule" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/consul-agent-sg?ref=data-ops-eval"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${module.workers-sg.id}"
+}
+
+module "workers-nomad-agent-rule" {
+  source             = "github.com/fpco/fpco-terraform-aws//tf-modules/nomad-agent-sg?ref=data-ops-eval"
+  cidr_blocks        = ["${var.vpc_cidr}"]
+  security_group_id  = "${module.workers-sg.id}"
+}
+
+
 #module "worker-hostname" {
 #  source          = "github.com/fpco/fpco-terraform-aws//tf-modules/init-snippet-hostname-simple?ref=data-ops-eval"
 #  hostname_prefix = "${var.name}-worker"
@@ -52,13 +84,7 @@ module "workers" {
   # select availability zones based on private subnets in use
   azs = ["${slice(data.aws_availability_zones.available.names, 0, length(var.private_subnet_cidrs))}"]
 
-  security_group_ids = [
-    "${module.private-ssh-sg.id}",
-    "${module.open-egress-sg.id}",
-    "${module.consul-agent-sg.id}",
-    "${module.nomad-agent-sg.id}",
-  ]
-
-  root_volume_size = "30"
-  user_data        = "${data.template_file.worker_user_data.rendered}"
+  security_group_ids = ["${module.workers-sg.id}"]
+  root_volume_size   = "30"
+  user_data          = "${data.template_file.worker_user_data.rendered}"
 }

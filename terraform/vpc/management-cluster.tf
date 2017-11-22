@@ -1,3 +1,36 @@
+# Security Group for management manage
+module "manage-sg" {
+  source      = "github.com/fpco/fpco-terraform-aws//tf-modules/security-group-base?ref=data-ops-eval"
+  name        = "${var.name}-manage"
+  description = "security group for management worker instances in the private subnet"
+  vpc_id      = "${module.vpc.vpc_id}"
+}
+
+module "manage-vpc-ssh-rule" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/ssh-sg?ref=data-ops-eval"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${module.manage-sg.id}"
+}
+
+module "manage-open-egress-rule" {
+  source              = "github.com/fpco/fpco-terraform-aws//tf-modules/open-egress-sg?ref=data-ops-eval"
+  security_group_id = "${module.manage-sg.id}"
+}
+
+module "manage-consul-agent-rules" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/consul-agent-sg?ref=data-ops-eval"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${module.manage-sg.id}"
+}
+
+module "manage-nomad-agent-rules" {
+  source             = "github.com/fpco/fpco-terraform-aws//tf-modules/nomad-agent-sg?ref=data-ops-eval"
+  cidr_blocks        = ["${var.vpc_cidr}"]
+  security_group_id  = "${module.manage-sg.id}"
+}
+
+
+
 #module "manage-hostname" {
 #  source          = "github.com/fpco/fpco-terraform-aws//tf-modules/init-snippet-hostname-simple?ref=data-ops-eval"
 #  hostname_prefix = "${var.name}-manage"
@@ -85,13 +118,7 @@ module "manage-cluster" {
   # select availability zones based on private subnets in use
   azs = ["${slice(data.aws_availability_zones.available.names, 0, length(var.private_subnet_cidrs))}"]
 
-  security_group_ids = [
-    "${module.private-ssh-sg.id}",
-    "${module.open-egress-sg.id}",
-    "${module.consul-agent-sg.id}",
-    "${module.nomad-agent-sg.id}",
-  ]
-
-  root_volume_size = "30"
-  user_data        = "${data.template_file.manage_user_data.rendered}"
+  security_group_ids = ["${module.manage-sg.id}"]
+  root_volume_size   = "30"
+  user_data          = "${data.template_file.manage_user_data.rendered}"
 }
