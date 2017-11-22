@@ -55,7 +55,7 @@ chown -R root:root /srv
 chmod -R o-rwx /srv
 
 echo "minion formula:"
-ls -alh /srv/*/* /srv/*/*/_*
+ls -alh /srv/*/* #/srv/*/*/_*
 echo "minion configs:"
 ls -alh /etc/salt/*
 cat /etc/salt/minion.d/*
