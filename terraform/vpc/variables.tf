@@ -26,7 +26,9 @@ variable "ami" {
 variable "instance_type" {
   description = "map of roles and instance types (VM sizes)"
   default     = {
+    "core-leader" = "t2.micro"
     "bastion"     = "t2.nano"
+    "worker"      = "t2.small"
   }
 }
 
@@ -43,4 +45,19 @@ variable "private_subnet_cidrs" {
 variable "vpc_cidr" {
   description = "CIDR for the VPC"
   default     = "10.23.0.0/16"
+}
+
+variable "consul_secret_key" {
+  description = ""
+  type        = "string"
+}
+
+variable "consul_master_token" {
+  description = ""
+  type        = "string"
+}
+
+variable "nomad_secret" {
+  description = ""
+  type        = "string"
 }
