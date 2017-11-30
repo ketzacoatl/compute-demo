@@ -4,7 +4,7 @@
 
 ## Use Packer to build an AMI based on Ubuntu Xenial (16.04)
 build:
-	@/bin/bash -c "source build.env && aws-env ./build.sh"
+	@/bin/bash -c "source build.env && ./build.sh"
 
 ## Show help screen.
 help:
