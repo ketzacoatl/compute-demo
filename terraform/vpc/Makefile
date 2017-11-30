@@ -1,4 +1,4 @@
-.PHONY: create-vpc-network plan apply generate-ssh-keypair
+.PHONY: create-vpc-network plan apply depends generate-ssh-keypair generate-nomad-secret-keys generate-consul-secret-keys generate-consul-master-token scp-ssh-key ssh-bastion taint-core-leaders destroy
 
 .DEFAULT_GOAL = help
 
@@ -27,9 +27,7 @@ apply:
 ## Use Terraform to destroy the VPC and all resources
 destroy:
 	@terraform init
-	@terraform plan -out=tf.out -destroy
-	@terraform apply tf.out
-	@rm -rf tf.out
+	@terraform apply -destroy
 
 ## Generate secrets and other dependencies
 depends: generate-ssh-keypair generate-nomad-secret-keys generate-consul-secret-keys generate-consul-master-token
@@ -59,6 +57,14 @@ generate-consul-master-token:
 	@python -c "import uuid; print uuid.uuid4()"
 	@python -c "import uuid; print uuid.uuid4()"
 	@python -c "import uuid; print uuid.uuid4()"
+
+## scp SSH key to bastion host, so we can SSH to other hosts in the deployment
+scp-ssh-key:
+	@scp -i id_rsa id_rsa ubuntu@$$(terraform output bastion_ip):~/.ssh/
+
+## SSH key to bastion host
+ssh-bastion:
+	@ssh -i id_rsa ubuntu@$$(terraform output bastion_ip)
 
 ## Taint the leader instances
 taint-core-leaders:
