@@ -18,11 +18,11 @@ create-vpc-network:
 ## Use Terraform to review the plan and generate a tf.out file to apply
 plan:
 	@terraform init
-	@aws-env terraform plan -out=tf.out
+	@terraform plan -out=tf.out
 
 ## Use Terraform to apply tf.out
 apply:
-	@aws-env terraform apply tf.out
+	@terraform apply tf.out
 
 ## Use Terraform to destroy the VPC and all resources
 destroy:
