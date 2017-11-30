@@ -124,12 +124,41 @@ ami = "ami-b87f56dd"
 
 ### SSH in and poke around
 
-`nomad status`
-`consul members`
-`nomad node-status`
-`nomad server-members`
-`consul monitor`
-`journalctl -u nomad`
+```
+ᐅ make scp-ssh-key
+id_rsa                         100% 3243     3.2KB/s   00:00    
+ᐅ make ssh-bastion
+...
+ubuntu@core-leaders-i-051b38f018dc9ba9e:~$
+```
+
+Poke around with a few tools:
+
+* `nomad status`
+* `consul members`
+* `nomad node-status`
+* `nomad server-members`
+* `consul monitor`
+* `journalctl -u nomad`
+
+That might look like:
+
+```
+ubuntu@core-leaders-i-051b38f018dc9ba9e:~$ sudo su -l
+root@core-leaders-i-051b38f018dc9ba9e:~# consul members
+Node                              Address            Status  Type    Build  Protocol  DC                  Segment
+core-leaders-i-051b38f018dc9ba9e  10.23.21.4:8301    alive   server  1.0.0  2         poc-demo-us-east-2  <all>
+fabio-i-0aae1e4b36500769b         10.23.21.191:8301  alive   client  1.0.0  2         poc-demo-us-east-2  <default>
+manage-i-00fb083352e1828f4        10.23.21.213:8301  alive   client  1.0.0  2         poc-demo-us-east-2  <default>
+workers-i-00567713bd2050fa9       10.23.21.11:8301   alive   client  1.0.0  2         poc-demo-us-east-2  <default>
+root@core-leaders-i-051b38f018dc9ba9e:~# nomad status
+No running jobs
+root@core-leaders-i-051b38f018dc9ba9e:~# nomad node-status
+ID        DC                  Name                         Class          Drain  Status
+f4c53b17  poc-demo.us-east-2  fabio-i-0aae1e4b36500769b    load-balancer  false  ready
+e232cde6  poc-demo.us-east-2  workers-i-00567713bd2050fa9  compute        false  ready
+51be4f38  poc-demo.us-east-2  manage-i-00fb083352e1828f4   manage         false  ready
+```
 
 
 ## Blabbity-blab
