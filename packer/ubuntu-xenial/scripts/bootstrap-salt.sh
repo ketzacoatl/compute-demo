@@ -36,6 +36,12 @@ salt-call --local                                           \
 # the user gave us pillar .sls as uploads, move them into place for salt
 mv /tmp/pillar /srv/
 
+##
+# print out some debug info
+#
+# don't fail if one of these prints fail
+set +e
+
 # all of /srv/* is root only, and not world readable
 chown -R root:root /srv
 chmod -R o-rwx /srv
