@@ -17,11 +17,9 @@ service salt-minion stop
 apt-get install -y git
 
 # clone our salt formula to bootstrap salt formula
-salt-call --local                                             \
-          state.single git.latest                             \
-          rev=master                                          \
-          name=https://github.com/fpco/bootstrap-salt-formula \
-          target=/srv/bootstrap-salt-formula
+#export BOOTSTRAP_BRANCH="data-ops-eval"
+#export BOOTSTRAP_LOG_LEVEL="debug"
+wget -O - https://raw.githubusercontent.com/fpco/bootstrap-salt-formula/master/install.sh | sh
 
 # overwrite the empty bootstrap pillar with the user's
 mv /tmp/bootstrap-salt-formula-pillar.sls /srv/bootstrap-salt-formula/pillar/bootstrap.sls
@@ -33,11 +31,6 @@ salt-call --local                                           \
           --pillar-root /srv/bootstrap-salt-formula/pillar  \
           --config-dir  /srv/bootstrap-salt-formula/conf    \
           state.highstate
-
-# add a helper to make this easier for the admin, later..
-cat <<END_ALIAS > /etc/profile.d/salt-file-roots.sh
-alias bootstrap-salt-formula="salt-call --local --file-root /srv/bootstrap-salt-formula/formula --pillar-root /srv/bootstrap-salt-formula/pillar --config-dir /srv/bootstrap-salt-formula/conf state.highstate"
-END_ALIAS
 
 # setup pillar for running state.highstate
 # the user gave us pillar .sls as uploads, move them into place for salt
