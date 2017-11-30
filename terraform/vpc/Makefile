@@ -31,24 +31,31 @@ destroy:
 	@terraform apply tf.out
 	@rm -rf tf.out
 
+## Generate secrets and other dependencies
+depends: generate-ssh-keypair generate-nomad-secret-keys generate-consul-secret-keys generate-consul-master-token
+	@echo success!
 ## Generate new ssh keypair
 generate-ssh-keypair:
+	@echo "generating SSH keypair"
 	@ssh-keygen -t rsa -b 4096 -f $$PWD/id_rsa
 
 ## Generate Nomad Secret Key (3, you can pick one)
 generate-nomad-secret-keys:
+	@echo "generating secret keys for nomad (pick one)"
 	@docker run -it vancluever/nomad keygen
 	@docker run -it vancluever/nomad keygen
 	@docker run -it vancluever/nomad keygen
 
 ## Generate Consul Secret Key (3, you can pick one)
 generate-consul-secret-keys:
+	@echo "generating secret keys for consul (pick one)"
 	@docker run -it --entrypoint /bin/consul progrium/consul keygen
 	@docker run -it --entrypoint /bin/consul progrium/consul keygen
 	@docker run -it --entrypoint /bin/consul progrium/consul keygen
 
 ## Generate Master Token for Consul
 generate-consul-master-token:
+	@echo "generating master token for consul (pick one)"
 	@python -c "import uuid; print uuid.uuid4()"
 	@python -c "import uuid; print uuid.uuid4()"
 	@python -c "import uuid; print uuid.uuid4()"
