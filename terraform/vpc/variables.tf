@@ -20,7 +20,6 @@ variable "ssh_key" {
 
 variable "ami" {
   description = "default AMI, FPCO build for SOA-driven infrastructure"
-  default     = "ami-95c715ed"
 }
 
 variable "instance_type" {
