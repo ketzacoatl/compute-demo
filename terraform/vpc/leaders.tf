@@ -186,7 +186,7 @@ data "template_file" "core_leaders_private_ips" {
   count    = "${length(var.private_subnet_cidrs)}"
   template = "$${ip}" 
   vars {
-    ip = "${cidrhost(var.private_subnet_cidrs[count.index], count.index + 4)}"
+    ip = "${cidrhost(var.private_subnet_cidrs[count.index], 4)}"
   }
 }
 
