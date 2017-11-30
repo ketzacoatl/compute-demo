@@ -100,24 +100,24 @@ resource "aws_iam_role_policy_attachment" "core-leader-attach-ec2-discovery" {
 }
 
 # IAM policy to grant access to KMS key used to encrypt core-leader data volumes
-data "aws_iam_policy_document" "core-leaders-access-kms-key" { 
-  statement {
-    sid = "Allow use of the key, to encrypt core-leader data volumes"
-    actions = [
-      "",
-    ]
-    resources = [
-      "",
-    ]
-  }
-}
+#data "aws_iam_policy_document" "core-leaders-access-kms-key" {
+#  statement {
+#    sid = "Allow use of the key, to encrypt core-leader data volumes"
+#    actions = [
+#      "",
+#    ]
+#    resources = [
+#      "",
+#    ]
+#  }
+#}
 
 # crypto key in AWS KMS for encrypting EBS data volumes
-resource "aws_kms_key" "core-leaders" {
-  description             = "KMS key to encrypt leader data volumes"
-  deletion_window_in_days = 7
-  policy                  = ""
-}
+#resource "aws_kms_key" "core-leaders" {
+#  description             = "KMS key to encrypt leader data volumes"
+#  deletion_window_in_days = 7
+#  policy                  = ""
+#}
 
 # EBS volumes for the leaders
 module "leader-data" {
@@ -184,7 +184,7 @@ data "template_file" "core-leader-init" {
 # calculate (render) string-list of Private IP addresses
 data "template_file" "core_leaders_private_ips" {
   count    = "${length(var.private_subnet_cidrs)}"
-  template = "$${ip}" 
+  template = "$${ip}"
   vars {
     ip = "${cidrhost(var.private_subnet_cidrs[count.index], 4)}"
   }
@@ -193,7 +193,7 @@ data "template_file" "core_leaders_private_ips" {
 # create an auto-recoverable EC2 instance running as a hashistack "core" leader
 module "core-leaders" {
   source = "github.com/fpco/fpco-terraform-aws//tf-modules/ec2-fixed-ip-auto-recover-instances?ref=data-ops-eval"
-  # name scheme looks like "name-core-leader-01" and so on 
+  # name scheme looks like "name-core-leader-01" and so on
   name_prefix        = "${var.name}"
   name_format        = "%s-core-leader-%02d"
   ami                = "${var.ami}"
