@@ -29,6 +29,12 @@ destroy:
 	@terraform init
 	@terraform apply -destroy
 
+## rm -rf all state/data files (id_rsa, terraform.tfstate and tfvars)
+clean:
+	@rm -rf id_rsa id_rsa.pub
+	@rm -rf terraform.tfstate terraform.tfstate.backup .terraform terraform.tfvars
+	@rm -rf .terraform terraform.tfvars tf.out
+
 ## Generate secrets and other dependencies
 depends: generate-ssh-keypair generate-nomad-secret-keys generate-consul-secret-keys generate-consul-master-token
 	@echo success!
