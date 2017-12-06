@@ -11,6 +11,7 @@ but aiming to base the code on production-quality infrastructure (run on AWS).
 
 ```
 ᐅ cd packer/terraform-vpc
+ᐅ # do whatever you do to get (temp) credentials
 ᐅ get-aws-creds
 ᐅ terraform init
 ᐅ # create terraform.tfvars if you want to customize the variables
@@ -67,7 +68,7 @@ You will eventually see the packer build complete with:
     amazon-ebs: Adding tag: "Desc": "Stock Ubuntu 16.04 + FPC common base for SOA-driven infrastructure"
     amazon-ebs: Adding tag: "OS_Version": "Ubuntu Xenial"
     amazon-ebs: Adding tag: "Release": "16.04 LTS"
-    amazon-ebs: Adding tag: "Build_ID": "11/08/2017"
+    amazon-ebs: Adding tag: "Build_ID": "2017-11-29-gitrev"
 ==> amazon-ebs: Creating snapshot tags
 ==> amazon-ebs: Terminating the source AWS instance...
 ==> amazon-ebs: Cleaning up any extra volumes...
