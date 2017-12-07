@@ -1,0 +1,2 @@
+region = "${REGION}"
+name = "${NAME}"
