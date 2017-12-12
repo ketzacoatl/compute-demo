@@ -29,6 +29,11 @@ module "workers-nomad-agent-rule" {
   security_group_id  = "${module.workers-sg.id}"
 }
 
+module "workers-nomad-app-ports-rule" {
+  source             = "github.com/fpco/fpco-terraform-aws//tf-modules/nomad-agent-worker-ports-sg?ref=data-ops-eval"
+  cidr_blocks        = ["${var.vpc_cidr}"]
+  security_group_id  = "${module.workers-sg.id}"
+}
 
 #module "worker-hostname" {
 #  source          = "github.com/fpco/fpco-terraform-aws//tf-modules/init-snippet-hostname-simple?ref=data-ops-eval"
