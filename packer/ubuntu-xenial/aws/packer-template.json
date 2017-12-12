@@ -46,6 +46,7 @@
           "scripts/root-ssh-setup.sh",
           "scripts/base.sh",
           "scripts/bootstrap-salt.sh",
+          "scripts/print-salt-debug.sh",
           "scripts/run-highstate.sh",
           "scripts/cleanup.sh"
         ]
