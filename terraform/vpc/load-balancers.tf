@@ -29,6 +29,22 @@ module "load-balancers-nomad-agent-rules" {
   security_group_id  = "${module.load-balancers-sg.id}"
 }
 
+module "load-balancers-public-http-rule" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/single-port-sg?ref=data-ops-eval"
+  port              = "9999"
+  description       = "Allow ingress to fabio (lb) port 9999 (TCP)"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = "${module.load-balancers-sg.id}"
+}
+
+module "load-balancers-admin-ui-rule" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/single-port-sg?ref=data-ops-eval"
+  port              = "9998"
+  description       = "Allow ingress to fabio admin port 9998 (TCP)"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${module.load-balancers-sg.id}"
+}
+
 #module "load-balancer-hostname" {
 #  source          = "github.com/fpco/fpco-terraform-aws//tf-modules/init-snippet-hostname-simple?ref=data-ops-eval"
 #  hostname_prefix = "${var.name}-load-balancer"
