@@ -94,11 +94,11 @@ module "load-balancer-cluster" {
   max_nodes        = "2"
   desired_capacity = "1"
   public_ip        = "false"
-  subnet_ids       = ["${module.vpc.private_subnet_ids}"]
+  subnet_ids       = ["${module.vpc.public_subnet_ids}"]
   # select availability zones based on private subnets in use
   azs = ["${slice(data.aws_availability_zones.available.names, 0, length(var.private_subnet_cidrs))}"]
 
-  security_group_ids = ["${module.workers-sg.id}"]
+  security_group_ids = ["${module.load-balancers-sg.id}"]
   root_volume_size   = "10"
   user_data          = "${data.template_file.lb_user_data.rendered}"
 }
