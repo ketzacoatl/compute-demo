@@ -32,6 +32,8 @@ nomad:
   consul:
     token: ${consul_client_token}
   node_class: ${nomad_node_class}
+  options:
+    'driver.raw_exec.enable': 1
 EOT
 
 echo "role: workers" > /etc/salt/grains
