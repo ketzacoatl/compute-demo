@@ -50,3 +50,7 @@ salt-call --local state.sls consul.service --log-level=${log_level}
 echo "${log_prefix} apply the nomad.service salt formula to run the agent"
 salt-call --local state.sls nomad
 salt-call --local state.sls nomad.consul_check_agent --log-level=${log_level}
+
+# allow ports for fabio lb, do this differently later
+ufw allow 9999
+ufw allow 9998
