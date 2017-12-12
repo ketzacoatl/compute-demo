@@ -192,7 +192,7 @@ data "template_file" "core_leaders_private_ips" {
 
 # create an auto-recoverable EC2 instance running as a hashistack "core" leader
 module "core-leaders" {
-  source = "github.com/fpco/fpco-terraform-aws//tf-modules/ec2-fixed-ip-auto-recover-instances?ref=data-ops-eval"
+  source = "github.com/fpco/fpco-terraform-aws//tf-modules/ec2-auto-recover-instances?ref=data-ops-eval"
   # name scheme looks like "name-core-leader-01" and so on
   name_prefix        = "${var.name}"
   name_format        = "%s-core-leader-%02d"
