@@ -29,6 +29,13 @@ module "manage-nomad-agent-rules" {
   security_group_id  = "${module.manage-sg.id}"
 }
 
+module "manage-hashi-ui-rule" {
+  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/single-port-sg?ref=data-ops-eval"
+  port              = "3000"
+  description       = "allow ingress to hashi-ui on port 3000 (TCP)"
+  cidr_blocks       = ["${var.vpc_cidr}"]
+  security_group_id = "${module.manage-sg.id}"
+}
 
 
 #module "manage-hostname" {
