@@ -19,12 +19,6 @@ module "core-leaders-open-egress-rule" {
 
 module "core-leaders-consul-leader-rules" {
   source            = "github.com/fpco/fpco-terraform-aws//tf-modules/consul-leader-sg?ref=data-ops-eval"
-  cidr_blocks       = ["${var.private_subnet_cidrs}"]
-  security_group_id = "${module.core-leaders-sg.id}"
-}
-
-module "core-leaders-consul-agent-rules" {
-  source            = "github.com/fpco/fpco-terraform-aws//tf-modules/consul-agent-sg?ref=data-ops-eval"
   cidr_blocks       = ["${var.vpc_cidr}"]
   security_group_id = "${module.core-leaders-sg.id}"
 }
