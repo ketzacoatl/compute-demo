@@ -1,58 +1,85 @@
-variable "region" {
-  description = "nomad region"
-  type        = "string"
-}
-
-variable "run_prometheus" {
-  description = "boolean, to run or not to run"
-  default = "true"
-}
-
-variable "prometheus_version" {
-  description = "version of prometheus to download, verify, and run"
-  default = "1.8.2"
-}
-
-variable "prometheus_version" {
-  description = "version of prometheus to download, verify, and run"
-  default = "sha512:f7577d48dcf5a8945b39c67edc59bf09c8420df6860206d06ef8fb43907a298ecc8f4a01bbbadc600b42bb2a8ac44622d30cfdc18e255d977c59515baf97b284"
-}
-
-variable "prometheus_cpu_limit" {
-  description = "CPU resource limit"
-  default = "450"
-}
-
-variable "prometheus_mem_limit" {
-  description = "Memory resource limit"
-  default = "512"
-}
-
-variable "prometheus_net_limit" {
-  description = "Network resource limit"
-  default = "5"
-}
-
-# create a list of template_file data sources with init for each instance
-data "template_file" "prometheus" {
-  count    = "${var.run_prometheus}"
-  template = "${file("../job-templates/prometheus-exec.tpl")}"
-  vars {
-    region      = "${var.region}"
-    datacenters = ["${var.datacenters}"]
-    version     = "${var.prometheus_version}"
-    checksum    = "${var.prometheus_checksum}"
-    cpu_limit   = "${var.prometheus_cpu_limit}"
-    mem_limit   = "${var.prometheus_mem_limit}"
-    net_limit   = "${var.prometheus_net_limit}"
-  }
-}
-
 provider "nomad" {
   address = "nomad-server.service.consul"
   region  = "${var.region}"
 }
 
-resource "nomad_job" "prometheus" {
-  jobspec = "${data.template_file.prometheus.rendered}"
+module "prometheus-exec" {
+  source        = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//prometheus-exec?ref=0.1"
+  run           = "${var.prometheus["run"]}"
+  region        = "${var.region}"
+  datacenters   = "${var.datacenters}"
+  consul_server = "${var.consul_server}"
+  consul_token  = "${var.consul_token}"
+}
+
+module "fabio-manage" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=0.1"
+  job_name    = "fabio-manage"
+  run         = "${var.fabio_manage["run"]}"
+  node_class  = "${var.fabio_manage["node_class"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
+}
+
+module "fabio-compute" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=0.1"
+  job_name    = "fabio-manage"
+  run         = "${var.fabio_compute["run"]}"
+  node_class  = "${var.fabio_compute["node_class"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
+}
+
+module "fabio-default" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=0.1"
+  job_name    = "fabio-default"
+  run         = "${var.fabio_default["run"]}"
+  node_class  = "${var.fabio_default["node_class"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
+}
+
+module "grafana" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//grafana?ref=0.1"
+  run         = "${var.grafana["run"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
+  node_class  = "${var.grafana["node_class"]}"
+}
+
+module "hashi-ui" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//hashi-ui?ref=0.1"
+  run         = "${var.hashi-ui["run"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
+}
+
+module "ladder" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//ladder-docker?ref=0.1"
+  run         = "${var.ladder["run"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
+}
+
+module "node_exporter" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//node_exporter?ref=0.1"
+  run         = "${var.node_exporter["run"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
+  job_name    = "${var.node_exporter["job_name"]}"
+}
+
+module "nomad-metrics" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//nomad-metrics?ref=0.1"
+  run         = "${var.nomad-metrics["run"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
+  node_class  = "${var.nomad-metrics["node_class"]}"
+}
+
+module "sysbench" {
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//sysbench?ref=0.1"
+  run         = "${var.sysbench["run"]}"
+  region      = "${var.region}"
+  datacenters = "${var.datacenters}"
 }
