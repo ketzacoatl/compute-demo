@@ -76,10 +76,3 @@ module "nomad-metrics" {
   datacenters = "${var.datacenters}"
   node_class  = "${var.nomad-metrics["node_class"]}"
 }
-
-module "sysbench" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//sysbench?ref=0.1"
-  run         = "${var.sysbench["run"]}"
-  region      = "${var.region}"
-  datacenters = "${var.datacenters}"
-}
