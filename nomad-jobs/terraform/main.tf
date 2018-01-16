@@ -4,7 +4,7 @@ provider "nomad" {
 }
 
 module "prometheus-exec" {
-  source        = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//prometheus-exec?ref=0.1"
+  source        = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//prometheus-exec?ref=compute-demo"
   run           = "${var.prometheus["run"]}"
   region        = "${var.region}"
   datacenters   = "${var.datacenters}"
@@ -13,7 +13,7 @@ module "prometheus-exec" {
 }
 
 module "fabio-manage" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=0.1"
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo"
   job_name    = "fabio-manage"
   run         = "${var.fabio_manage["run"]}"
   node_class  = "${var.fabio_manage["node_class"]}"
@@ -22,7 +22,7 @@ module "fabio-manage" {
 }
 
 module "fabio-compute" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=0.1"
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo"
   job_name    = "fabio-manage"
   run         = "${var.fabio_compute["run"]}"
   node_class  = "${var.fabio_compute["node_class"]}"
@@ -31,7 +31,7 @@ module "fabio-compute" {
 }
 
 module "fabio-default" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=0.1"
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo"
   job_name    = "fabio-default"
   run         = "${var.fabio_default["run"]}"
   node_class  = "${var.fabio_default["node_class"]}"
@@ -40,7 +40,7 @@ module "fabio-default" {
 }
 
 module "grafana" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//grafana?ref=0.1"
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//grafana?ref=compute-demo"
   run         = "${var.grafana["run"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
@@ -48,21 +48,21 @@ module "grafana" {
 }
 
 module "hashi-ui" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//hashi-ui?ref=0.1"
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//hashi-ui?ref=compute-demo"
   run         = "${var.hashi-ui["run"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
 }
 
 module "ladder" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//ladder-docker?ref=0.1"
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//ladder-docker?ref=compute-demo"
   run         = "${var.ladder["run"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
 }
 
 module "node_exporter" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//node_exporter?ref=0.1"
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//node_exporter?ref=compute-demo"
   run         = "${var.node_exporter["run"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
@@ -70,7 +70,7 @@ module "node_exporter" {
 }
 
 module "nomad-metrics" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//nomad-metrics?ref=0.1"
+  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//nomad-metrics?ref=compute-demo"
   run         = "${var.nomad-metrics["run"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
