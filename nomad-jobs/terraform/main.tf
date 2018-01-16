@@ -46,13 +46,6 @@ module "hashi-ui" {
   nomad_address = "${var.nomad_address}"
 }
 
-module "ladder" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//ladder-docker?ref=compute-demo"
-  run         = "${var.ladder["run"]}"
-  region      = "${var.region}"
-  datacenters = "${var.datacenters}"
-}
-
 module "node_exporter" {
   source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//node_exporter?ref=compute-demo"
   run         = "${var.node_exporter["run"]}"
