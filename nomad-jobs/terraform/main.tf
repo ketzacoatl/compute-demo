@@ -1,5 +1,5 @@
 provider "nomad" {
-  address = "nomad-server.service.consul"
+  address = "${var.nomad_address}"
   region  = "${var.region}"
 }
 

@@ -1,3 +1,8 @@
+variable "nomad_address" {
+  description = "Address of Nomad"
+  default     = "http://nomad-server.service.consul:4646"
+}
+
 variable "consul_server" {
   description = "Address of Consul server"
 }
