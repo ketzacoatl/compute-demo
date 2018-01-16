@@ -39,10 +39,11 @@ module "grafana" {
 }
 
 module "hashi-ui" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//hashi-ui?ref=compute-demo"
-  run         = "${var.hashi-ui["run"]}"
-  region      = "${var.region}"
-  datacenters = "${var.datacenters}"
+  source        = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//hashi-ui?ref=compute-demo"
+  run           = "${var.hashi-ui["run"]}"
+  region        = "${var.region}"
+  datacenters   = "${var.datacenters}"
+  nomad_address = "${var.nomad_address}"
 }
 
 module "ladder" {
