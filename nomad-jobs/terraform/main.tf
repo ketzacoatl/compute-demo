@@ -23,18 +23,9 @@ module "fabio-manage" {
 
 module "fabio-compute" {
   source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo"
-  job_name    = "fabio-manage"
+  job_name    = "fabio-compute"
   run         = "${var.fabio_compute["run"]}"
   node_class  = "${var.fabio_compute["node_class"]}"
-  region      = "${var.region}"
-  datacenters = "${var.datacenters}"
-}
-
-module "fabio-default" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo"
-  job_name    = "fabio-default"
-  run         = "${var.fabio_default["run"]}"
-  node_class  = "${var.fabio_default["node_class"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
 }

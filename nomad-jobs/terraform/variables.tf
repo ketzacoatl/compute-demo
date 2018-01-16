@@ -53,16 +53,6 @@ variable "fabio_compute" {
   }
 }
 
-variable "fabio_default" {
-  description = "parameters for fabio-default module"
-  type        = "map"
-
-  default = {
-    run        = true
-    node_class = "default"
-  }
-}
-
 variable "grafana" {
   description = "parameters for grafana module"
   type        = "map"
