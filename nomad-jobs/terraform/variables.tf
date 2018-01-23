@@ -68,7 +68,8 @@ variable "hashi-ui" {
   type        = "map"
 
   default = {
-    run = true
+    run        = true
+    node_class = "manage"
   }
 }
 

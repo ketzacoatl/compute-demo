@@ -44,6 +44,7 @@ module "hashi-ui" {
   region        = "${var.region}"
   datacenters   = "${var.datacenters}"
   nomad_address = "${var.nomad_address}"
+  node_class    = "${var.hashi-ui["node_class"]}"
 }
 
 module "node_exporter" {
