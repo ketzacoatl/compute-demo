@@ -50,3 +50,6 @@ salt-call --local state.sls consul.service --log-level=${log_level}
 echo "${log_prefix} apply the nomad.service salt formula to run the agent"
 salt-call --local state.sls nomad
 salt-call --local state.sls nomad.consul_check_agent --log-level=${log_level}
+
+echo "${log_prefix} apply the docker.registry.systemd salt formula to run Docker Registry"
+salt-call --local state.sls docker.registry.systemd $VERBOSE
