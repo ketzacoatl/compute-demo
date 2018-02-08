@@ -31,3 +31,7 @@ fi
 
 #packer build -debug -var-file=$AMI_BUILD_CONF $PACKER_TEMPLATE
 packer build -var-file=$AMI_BUILD_CONF $PACKER_TEMPLATE
+
+jq --raw-output --from-file ami-from-manifest.jq \
+   < packer-manifest.json \
+   > ami-id.txt
