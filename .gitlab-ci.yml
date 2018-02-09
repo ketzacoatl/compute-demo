@@ -1,0 +1,21 @@
+---
+image: registry.dev-sandbox.fpcomplete.com/ops/default-build-imagesha256:6aecdaeef6d9d1c55edc9e1fe81e26660fe5d1c1d8d4533c81272c2fef007e14
+
+stages:
+  - lint
+
+yamllint:
+  stage: lint
+  script:
+    - yamllint $(find -path */.terraform/* -prune
+                   -o -path .gitlab-ci.yml -prune
+                   -o -iname '*.yaml'
+                   -o -iname '*.yml'
+                   -print)
+
+shellcheck:
+  stage: lint
+  script:
+    - shellcheck $(find -path */.terraform/* -prune
+                     -o -name '*.sh'
+                     -print)
