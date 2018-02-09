@@ -7,8 +7,9 @@ stages:
 yamllint:
   stage: lint
   script:
-    - yamllint $(find -path */.terraform/* -prune
-                   -o -path .gitlab-ci.yml -prune
+    - yamllint $(find -path */.terraform/*
+                   -o -path ./.gitlab-ci.yml
+                   -prune
                    -o -iname '*.yaml'
                    -o -iname '*.yml'
                    -print)
