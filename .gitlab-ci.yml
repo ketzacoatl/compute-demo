@@ -13,7 +13,7 @@ yamllint:
                    -o -iname '*.yaml'
                    -o -iname '*.yml'
                    -print)
-    - '[ ! -z "${ys}" ] && yamllint'
+    - 'if [ ! -z "${ys}" ]; then yamllint "${ys}"; else true; fi'
 
 shellcheck:
   stage: lint
