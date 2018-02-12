@@ -16,14 +16,17 @@ variable "region" {
 output "region" {
   value = "${var.region}"
 }
+
 // VPC ID
 output "vpc_id" {
   value = "${module.vpc.vpc_id}"
 }
+
 // Subnet ID
 output "subnet_id" {
   value = "${module.vpc.subnet_id}"
 }
+
 // ID of latest xenial AMI
 output "xenial_ami_id" {
   value = "${module.vpc.xenial_ami_id}"
