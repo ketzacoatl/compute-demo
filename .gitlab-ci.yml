@@ -25,6 +25,7 @@ shellcheck:
 
 ubuntu-xenial-ami:
   stage: build
+  when: manual
   script:
     - cd "./packer/ubuntu-xenial"
     - make build
