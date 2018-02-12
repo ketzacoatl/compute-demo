@@ -1,0 +1,40 @@
+---
+image: registry.dev-sandbox.fpcomplete.com/ops/default-build-image@sha256:26f06a778063afae7153381c331d1817237be0e105c04c9fc95b876877e840fa
+
+stages:
+  - lint
+  - build
+
+yamllint:
+  stage: lint
+  script:
+    - ys=$(find -path */.terraform/*
+                   -o -path ./.gitlab-ci.yml
+                   -prune
+                   -o -iname '*.yaml'
+                   -o -iname '*.yml'
+                   -print)
+    - 'if [ ! -z "${ys}" ]; then yamllint "${ys}"; else true; fi'
+
+shellcheck:
+  stage: lint
+  script:
+    - shellcheck $(find -path */.terraform/* -prune
+                     -o -name '*.sh'
+                     -print)
+
+ubuntu-xenial-ami:
+  stage: build
+  script:
+    - cd "./packer/ubuntu-xenial"
+    - make build
+    - cp "./packer-manifest.json"
+         "${CI_PROJECT_DIR}/${CI_JOB_NAME}-manifest.json"
+    - cp "./ami-id.txt"
+         "${CI_PROJECT_DIR}/${CI_JOB_NAME}-ami.txt"
+  artifacts:
+    paths:
+      - "${CI_PROJECT_DIR}/${CI_JOB_NAME}-manifest.json"
+      - "${CI_PROJECT_DIR}/${CI_JOB_NAME}-ami.txt"
+  variables:
+    CI_JOB_NAME: 'ubuntu-xenial-ami'
