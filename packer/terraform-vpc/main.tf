@@ -1,3 +1,8 @@
+provider "aws" {
+  version = "~> 1.9"
+  region  = "${var.region}"
+}
+
 module "vpc" {
   source = "github.com/fpco/fpco-terraform-aws//packer/terraform-vpc?ref=master"
   region = "${var.region}"
