@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export DEBIAN_FRONTEND=noninteractive
+
 # for logging when running salt-call
 VERBOSE="--log-level=info"
 # install pip before running highstate, so it is available from the get-go
