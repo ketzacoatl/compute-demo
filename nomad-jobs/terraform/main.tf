@@ -1,37 +1,60 @@
 provider "nomad" {
+  version = "~> 1.1"
+
   address = "${var.nomad_address}"
   region  = "${var.region}"
 }
 
+provider "template" {
+  version = "~> 1.0"
+}
+
 module "prometheus-exec" {
-  source        = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//prometheus-exec?ref=compute-demo"
+  source = "github.com/kerscher/terraform-cluster-common-nomad-jobs//prometheus-exec?ref=compute-demo-develop"
+
   run           = "${var.prometheus["run"]}"
   region        = "${var.region}"
   datacenters   = "${var.datacenters}"
+  node_class    = "${var.prometheus["node_class"]}"
   consul_server = "${var.consul_server}"
   consul_token  = "${var.consul_token}"
 }
 
+data "template_file" "fabio-manage-configuration" {
+  vars {}
+
+  template = "${file("./templates/fabio-manage.conf")}"
+}
+
 module "fabio-manage" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo"
-  job_name    = "fabio-manage"
-  run         = "${var.fabio_manage["run"]}"
-  node_class  = "${var.fabio_manage["node_class"]}"
-  region      = "${var.region}"
-  datacenters = "${var.datacenters}"
+  source = "github.com/kerscher/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo-develop"
+
+  job_name      = "fabio-manage"
+  run           = "${var.fabio_manage["run"]}"
+  node_class    = "${var.fabio_manage["node_class"]}"
+  region        = "${var.region}"
+  datacenters   = "${var.datacenters}"
+  configuration = "${data.template_file.fabio-manage-configuration.rendered}"
+}
+
+data "template_file" "fabio-compute-configuration" {
+  vars {}
+
+  template = "${file("./templates/fabio-compute.conf")}"
 }
 
 module "fabio-compute" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo"
-  job_name    = "fabio-compute"
-  run         = "${var.fabio_compute["run"]}"
-  node_class  = "${var.fabio_compute["node_class"]}"
-  region      = "${var.region}"
-  datacenters = "${var.datacenters}"
+  source        = "github.com/kerscher/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo-develop"
+  job_name      = "fabio-compute"
+  run           = "${var.fabio_compute["run"]}"
+  node_class    = "${var.fabio_compute["node_class"]}"
+  region        = "${var.region}"
+  datacenters   = "${var.datacenters}"
+  configuration = "${data.template_file.fabio-compute-configuration.rendered}"
 }
 
 module "grafana" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//grafana?ref=compute-demo"
+  source      = "github.com/kerscher/terraform-cluster-common-nomad-jobs//grafana?ref=compute-demo-develop"
   run         = "${var.grafana["run"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
@@ -39,7 +62,8 @@ module "grafana" {
 }
 
 module "hashi-ui" {
-  source        = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//hashi-ui?ref=compute-demo"
+  source = "github.com/kerscher/terraform-cluster-common-nomad-jobs//hashi-ui?ref=compute-demo-develop"
+
   run           = "${var.hashi-ui["run"]}"
   region        = "${var.region}"
   datacenters   = "${var.datacenters}"
@@ -48,7 +72,8 @@ module "hashi-ui" {
 }
 
 module "node_exporter" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//node_exporter?ref=compute-demo"
+  source = "github.com/kerscher/terraform-cluster-common-nomad-jobs//node_exporter?ref=compute-demo-develop"
+
   run         = "${var.node_exporter["run"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
@@ -56,9 +81,21 @@ module "node_exporter" {
 }
 
 module "nomad-metrics" {
-  source      = "github.com/ketzacoatl/terraform-cluster-common-nomad-jobs//nomad-metrics?ref=compute-demo"
+  source = "github.com/kerscher/terraform-cluster-common-nomad-jobs//nomad-metrics?ref=compute-demo-develop"
+
   run         = "${var.nomad-metrics["run"]}"
   region      = "${var.region}"
   datacenters = "${var.datacenters}"
   node_class  = "${var.nomad-metrics["node_class"]}"
+}
+
+module "tls-example" {
+  source = "../modules/tls-example"
+
+  run          = "${var.tls-example["run"]}"
+  region       = "${var.region}"
+  datacenters  = "${var.datacenters}"
+  node_class   = "${var.tls-example["node_class"]}"
+  fabio_prefix = "${var.tls-example["fabio_prefix"]}"
+  domain       = "${var.tls-example["domain"]}"
 }

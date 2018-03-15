@@ -27,7 +27,8 @@ variable "prometheus" {
   type        = "map"
 
   default = {
-    run = true
+    run        = true
+    node_class = "manage"
   }
 }
 
@@ -108,5 +109,17 @@ variable "sysbench" {
 
   default = {
     run = true
+  }
+}
+
+variable "tls-example" {
+  description = "parameters for a TLS-enabled example application"
+  type        = "map"
+
+  default = {
+    run          = true
+    node_class   = "compute"
+    fabio_prefix = "urlprefix-compute-demo-compute-"
+    domain       = "compute-demo.com"
   }
 }
