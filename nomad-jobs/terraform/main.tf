@@ -21,7 +21,11 @@ module "prometheus-exec" {
 }
 
 data "template_file" "fabio-manage-configuration" {
-  vars {}
+  vars {
+    clientca = "${null_resource.vars_fabio_manage.triggers.ca_path}"
+    cert     = "${null_resource.vars_fabio_manage.triggers.cert_path}"
+    token    = "${var.fabio_manage_token}"
+  }
 
   template = "${file("./templates/fabio-manage.conf")}"
 }
@@ -30,15 +34,19 @@ module "fabio-manage" {
   source = "github.com/kerscher/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo-develop"
 
   job_name      = "fabio-manage"
-  run           = "${var.fabio_manage["run"]}"
-  node_class    = "${var.fabio_manage["node_class"]}"
+  run           = "${null_resource.vars.fabio_manage.triggers.run}"
+  node_class    = "${null_resource.vars.fabio_manage.triggers.node_class}"
   region        = "${var.region}"
   datacenters   = "${var.datacenters}"
   configuration = "${data.template_file.fabio-manage-configuration.rendered}"
 }
 
 data "template_file" "fabio-compute-configuration" {
-  vars {}
+  vars {
+    clientca = "${var.fabio_compute_ca["path"]}"
+    cert     = "${var.fabio_compute_cert["path"]}"
+    token    = "${var.fabio_compute_token}"
+  }
 
   template = "${file("./templates/fabio-compute.conf")}"
 }
@@ -46,8 +54,8 @@ data "template_file" "fabio-compute-configuration" {
 module "fabio-compute" {
   source        = "github.com/kerscher/terraform-cluster-common-nomad-jobs//fabio?ref=compute-demo-develop"
   job_name      = "fabio-compute"
-  run           = "${var.fabio_compute["run"]}"
-  node_class    = "${var.fabio_compute["node_class"]}"
+  run           = "${null_resource.vars.fabio_compute.triggers.run}"
+  node_class    = "${null_resource.vars.fabio_compute.triggers.node_class}"
   region        = "${var.region}"
   datacenters   = "${var.datacenters}"
   configuration = "${data.template_file.fabio-compute-configuration.rendered}"

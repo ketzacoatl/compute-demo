@@ -11,6 +11,14 @@ variable "consul_token" {
   description = "Token to access Consul"
 }
 
+variable "consul_kv_prefix" {
+  default = "v1/kv"
+}
+
+variable "consul_kv_certs" {
+  default = "secrets/certificates"
+}
+
 variable "region" {
   description = "nomad region"
   type        = "string"
@@ -33,24 +41,39 @@ variable "prometheus" {
 }
 
 # Fabio
-# Unfortunately due to how Terraform handles nested maps, this is needed
-variable "fabio_manage" {
-  description = "parameters for fabio-manage module"
-  type        = "map"
-
-  default = {
+resource "null_resource" "vars_fabio_manage" {
+  triggers = {
     run        = true
     node_class = "manage"
+    ca_path    = "${var.consul_server}/${var.consul_kv_prefix}/${var.consul_kv_certs}/fabio/manage/ca"
+    cert_path  = "${var.consul_server}/${var.consul_kv_prefix}/${var.consul_kv_certs}/fabio/manage/tls"
   }
 }
 
-variable "fabio_compute" {
-  description = "parameters for fabio-compute module"
-  type        = "map"
+variable "fabio_manage_cert" {}
 
-  default = {
+variable "fabio_manage_ca" {}
+
+variable "fabio_manage_token" {
+  description = "Token with ACL only to access paths created above. Must be created separately."
+}
+
+# Likewise having parts defaulting and others secret is cumbersome,
+# so we separate the secret part here and provide via `terraform.tfvars`
+variable "fabio_compute_cert" {}
+
+variable "fabio_compute_ca" {}
+
+variable "fabio_compute_token" {
+  description = "Token with ACL only to access paths created above. Must be created separately."
+}
+
+resource "null_resource" "vars_fabio_compute" {
+  triggers = {
     run        = true
     node_class = "compute"
+    ca_path    = "${var.consul_server}/${var.consul_kv_prefix}/${var.consul_kv_certs}/fabio/compute/ca"
+    cert_path  = "${var.consul_server}/${var.consul_kv_prefix}/${var.consul_kv_certs}/fabio/compute/tls"
   }
 }
 
